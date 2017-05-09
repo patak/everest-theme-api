@@ -9,6 +9,7 @@
   "author": "Patak",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.2"
+    "express": "^4.15.2",
+    "stream-replace": "^1.0.0"
   }
 }

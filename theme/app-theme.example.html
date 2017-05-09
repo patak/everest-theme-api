@@ -5,34 +5,46 @@
   <template>
     <style>
       :root {
-        --dark-primary-color:       #D32F2F;
-        --default-primary-color:    #F44336;
-        --light-primary-color:      #FFCDD2;
-        --text-primary-color:       #FFFFFF;
-        --accent-color:             #536DFE;
-        --primary-background-color: #FFCDD2;
-        --primary-text-color:       #212121;
-        --secondary-text-color:     #757575;
-        --disabled-text-color:      #BDBDBD;
-        --divider-color:            #BDBDBD;
+        --app-primary-color:        #appPrimaryValue;
+        --app-secondary-color:      #appSecondaryValue;
+        --dark-primary-color:       #darkPrimaryValue;
+        --default-primary-color:    #defaultPrimaryValue;
+        --light-primary-color:      #lightPrimaryValue;
+        --text-primary-color:       #textPrimaryValue;
+        --accent-color:             #accentValue;
+        --primary-background-color: #primaryBackgroundValue;
+        --primary-text-color:       #primaryTextValue;
+        --secondary-text-color:     #secondaryTextValue;
+        --disabled-text-color:      #disabledTextValue;
+        --divider-color:            #dividerValue;
 
 
         /* Components */
 
         /* paper-drawer-panel */
-        --drawer-menu-color:           #ffffff;
-        --drawer-border-color:         1px solid #ccc;
+        --drawer-menu-color:           #draverMenuValue;
+        --drawer-border-color:         1px solid #drawerBorderValue;
         --drawer-toolbar-border-color: 1px solid rgba(0, 0, 0, 0.22);
 
         /* paper-menu */
-        --paper-menu-background-color: #fff;
-        --menu-link-color:             #111111;
+        --paper-menu-background-color: #paperMenuBackgroundValue;
+        --menu-link-color:             #menuLinkColor;
 
         /* paper-input */
         --paper-input-container-color:       rgba(255, 255, 255, 0.64);
         --paper-input-container-focus-color: rgba(255, 255, 255, 1);
-        --paper-input-container-input-color: #fff;
+        --paper-input-container-input-color: #paperInputContainerInputValue;
       }
     </style>
   </template>
+  <script>
+	  Polymer({
+	    is: 'app-theme',
+		properties: {
+		  base64Logo: {
+		    //value: 
+		  }
+		}
+	  });
+  </script>
 </dom-module>
