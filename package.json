@@ -1,0 +1,14 @@
+{
+  "name": "everest_theme_api",
+  "version": "1.0.0",
+  "description": "Webservices for Everest themes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patak",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
