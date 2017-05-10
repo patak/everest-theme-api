@@ -29,7 +29,9 @@ app.post('/download', bodyParser.urlencoded(true), function(req, res){
       rstream = rstream.pipe(replace(re, obj[property]));
     }
   }
-  rstream.pipe(res);
+  rstream.pipe(replace(/(#.*#)+/gmi, "inherit"))
+  .pipe(res);
+
 });
 
 app.listen(3000, function () {
