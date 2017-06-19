@@ -4,6 +4,10 @@ var replace = require('stream-replace');
 var bodyParser = require('body-parser');
 var formidable = require('formidable');
 var path = require('path');
+var base64Img = require('base64-img');
+var Jimp = require('jimp');
+var randomstring = require("randomstring");
+
 
 var app = express();
 
@@ -11,10 +15,6 @@ app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
-});
-
-app.get('/', function (req, res) {
-  res.send('Hello World!');
 });
 
 app.post('/download', bodyParser.urlencoded(true), function (req, res) {
@@ -37,13 +37,35 @@ app.post('/download', bodyParser.urlencoded(true), function (req, res) {
 
 app.post('/upload', function (req, res) {
   var form = new formidable.IncomingForm();
+  var newPath = null;
+  var minifyPath = null;
+  var fileBaseName = null;
+  var data = null;
 
   form.multiples = true;
-
   form.uploadDir = path.join(__dirname, '/uploads');
 
+  form.parse(req, function (err, fields, files) {
+    res.status(200).end(data);
+  });
+
+  form.on('fileBegin', function (field, file) {
+    if (file.type != 'image/png' && file.type != 'image/jpg' && file.type != 'image/jpeg')
+      res.status(403).end("File not valid");
+  });
+
   form.on('file', function (field, file) {
-    fs.rename(file.path, path.join(form.uploadDir, file.name));
+    fileBaseName = path.basename(file.name, path.extname(file.name));
+    fileBaseName = randomstring.generate(7);
+    minifyPath = path.join(form.uploadDir, "minify_" + fileBaseName + path.extname(file.name));
+    newPath = path.join(form.uploadDir, fileBaseName + path.extname(file.name));
+    fs.rename(file.path, newPath);
+    Jimp.read(newPath).then(function (lenna) {
+      lenna.resize(42, 42)
+        .write(minifyPath);
+    }).catch(function (err) {
+      console.error(err);
+    });
   });
 
   form.on('error', function (err) {
@@ -51,10 +73,8 @@ app.post('/upload', function (req, res) {
   });
 
   form.on('end', function () {
-    res.status(200).end('success');
+    //data = base64Img.base64Sync(minifyPath);
   });
-
-  form.parse(req);
 });
 
 app.listen(3000, function () {
