@@ -42,7 +42,7 @@ app.post('/upload', function (req, res) {
   var newPath = null;
   var minifyPath = null;
   var fileBaseName = null;
-  var data = null;
+  var dataImage = null;
 
   form.multiples = true;
   form.uploadDir = path.join(__dirname, '/uploads');
@@ -58,8 +58,13 @@ app.post('/upload', function (req, res) {
       fileBaseName = path.basename(file.name, path.extname(file.name));
       fileBaseName = randomstring.generate(7);
       minifyPath = path.join(form.uploadDir, "minify_" + fileBaseName + path.extname(file.name));
+
       newPath = path.join(form.uploadDir, fileBaseName + path.extname(file.name));
       fs.rename(file.path, newPath);
+
+      /**
+       * Write new minify image
+       */
       Jimp.read(newPath).then(function (image) {
         image.scale(0.1)
           .write(minifyPath);
@@ -74,6 +79,7 @@ app.post('/upload', function (req, res) {
       return;
     })
     .on('end', function () {
+      //dataImage = base64Img.base64Sync(minifyPath);
       res.status(200).end("Great success");;
     });
 });

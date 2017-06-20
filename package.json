@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "base64-img": "^1.0.3",
+    "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "formidable": "^1.1.1",
