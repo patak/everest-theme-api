@@ -40,41 +40,39 @@ app.post('/upload', function (req, res) {
   var newPath = null;
   var minifyPath = null;
   var fileBaseName = null;
-  var data = null;
 
   form.multiples = true;
   form.uploadDir = path.join(__dirname, '/uploads');
 
-  form.parse(req, function (err, fields, files) {
-    res.status(200).end(data);
-  });
-
-  form.on('fileBegin', function (field, file) {
-    if (file.type != 'image/png' && file.type != 'image/jpg' && file.type != 'image/jpeg')
+  form.parse(req)
+    .on('fileBegin', function (field, file) {
+      if (file.type != 'image/png' && file.type != 'image/jpg' && file.type != 'image/jpeg') {
+        form.emit('error', 'File not Valid');
+        return;
+      }
+    })
+    .on('file', function (field, file) {
+      fileBaseName = path.basename(file.name, path.extname(file.name));
+      fileBaseName = randomstring.generate(7);
+      minifyPath = path.join(form.uploadDir, "minify_" + fileBaseName + path.extname(file.name));
+      newPath = path.join(form.uploadDir, fileBaseName + path.extname(file.name));
+      fs.rename(file.path, newPath);
+      Jimp.read(newPath).then(function (lenna) {
+        lenna.resize(42, 42)
+          .write(minifyPath);
+      }).catch(function (err) {
+        console.error(err);
+      });
+    })
+    .on('error', function (err) {
+      console.log('An error has occured: \n' + err);
+      res.header('Connection', 'close');
       res.status(403).end("File not valid");
-  });
-
-  form.on('file', function (field, file) {
-    fileBaseName = path.basename(file.name, path.extname(file.name));
-    fileBaseName = randomstring.generate(7);
-    minifyPath = path.join(form.uploadDir, "minify_" + fileBaseName + path.extname(file.name));
-    newPath = path.join(form.uploadDir, fileBaseName + path.extname(file.name));
-    fs.rename(file.path, newPath);
-    Jimp.read(newPath).then(function (lenna) {
-      lenna.resize(42, 42)
-        .write(minifyPath);
-    }).catch(function (err) {
-      console.error(err);
+      return;
+    })
+    .on('end', function () {
+      res.status(200).end("Great Success");;
     });
-  });
-
-  form.on('error', function (err) {
-    console.log('An error has occured: \n' + err);
-  });
-
-  form.on('end', function () {
-    //data = base64Img.base64Sync(minifyPath);
-  });
 });
 
 app.listen(3000, function () {
