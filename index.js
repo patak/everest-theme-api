@@ -1,12 +1,14 @@
-var express = require('express');
-var fs = require('fs');
-var replace = require('stream-replace');
-var bodyParser = require('body-parser');
-var formidable = require('formidable');
-var path = require('path');
-var base64Img = require('base64-img');
-var Jimp = require('jimp');
-var randomstring = require("randomstring");
+const express = require('express');
+const fs = require('fs');
+const replace = require('stream-replace');
+const bodyParser = require('body-parser');
+const formidable = require('formidable');
+const path = require('path');
+const base64Img = require('base64-img');
+const Jimp = require('jimp');
+const randomstring = require("randomstring");
+const Promise = require('bluebird');
+
 
 
 var app = express();
@@ -40,6 +42,7 @@ app.post('/upload', function (req, res) {
   var newPath = null;
   var minifyPath = null;
   var fileBaseName = null;
+  var data = null;
 
   form.multiples = true;
   form.uploadDir = path.join(__dirname, '/uploads');
@@ -57,8 +60,8 @@ app.post('/upload', function (req, res) {
       minifyPath = path.join(form.uploadDir, "minify_" + fileBaseName + path.extname(file.name));
       newPath = path.join(form.uploadDir, fileBaseName + path.extname(file.name));
       fs.rename(file.path, newPath);
-      Jimp.read(newPath).then(function (lenna) {
-        lenna.resize(42, 42)
+      Jimp.read(newPath).then(function (image) {
+        image.scale(0.1)
           .write(minifyPath);
       }).catch(function (err) {
         console.error(err);
@@ -71,7 +74,7 @@ app.post('/upload', function (req, res) {
       return;
     })
     .on('end', function () {
-      res.status(200).end("Great Success");;
+      res.status(200).end("Great success");;
     });
 });
 
