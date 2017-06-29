@@ -85,7 +85,7 @@ app.post('/upload', function (req, res) {
     */
     var plop = new Promise(function (resolve, reject) {
       Jimp.read(newPath).then(function (image) {
-        image.scale(0.1)
+        image.quality(10)
           .write(minifyPath, resolve);
       }).catch(function (err) {
         console.error(err);
