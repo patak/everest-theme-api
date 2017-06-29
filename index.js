@@ -89,6 +89,7 @@ app.post('/upload', function (req, res) {
           .write(minifyPath, resolve);
       }).catch(function (err) {
         console.error(err);
+        return res.status(403).end("Incorrect File");
       });
     });
 
