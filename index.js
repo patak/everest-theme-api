@@ -83,7 +83,7 @@ app.post('/upload', function (req, res) {
     /**
     * Write new minify image
     */
-    var plop = new Promise(function (resolve, reject) {
+    var minify = new Promise(function (resolve, reject) {
       Jimp.read(newPath).then(function (image) {
         image.quality(10)
           .write(minifyPath, resolve);
@@ -93,7 +93,7 @@ app.post('/upload', function (req, res) {
       });
     });
 
-    plop.then(function () {
+    minify.then(function () {
       dataImage = base64Img.base64Sync(minifyPath);
       res.status(200).json({
         imageName: '' + newFileName + '',
