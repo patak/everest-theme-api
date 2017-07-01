@@ -20,6 +20,8 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.use('/images', express.static('uploads'));
+
 app.post('/download', bodyParser.urlencoded(true), function (req, res) {
   var file = path.join(__dirname, '/theme/app-theme.example.html');
   var rstream = fs.createReadStream(file);
