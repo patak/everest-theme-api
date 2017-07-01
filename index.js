@@ -85,7 +85,8 @@ app.post('/upload', function (req, res) {
     /**
     * Write new minify image
     */
-    var minify = new Promise(function (resolve, reject) {
+
+    var minifyOriginalImage = new Promise(function (resolve, reject) {
       Jimp.read(newPath).then(function (image) {
         image.quality(10)
           .write(minifyPath, resolve);
@@ -95,11 +96,11 @@ app.post('/upload', function (req, res) {
       });
     });
 
-    minify.then(function () {
+    minifyOriginalImage.then(function () {
       dataImage = base64Img.base64Sync(minifyPath);
       res.status(200).json({
-        imageName: '' + newFileName + '',
-        imageBase64: '' + dataImage + ''
+        imageName: newFileName,
+        imageBase64: dataImage
       });
     });
 
@@ -108,6 +109,7 @@ app.post('/upload', function (req, res) {
 
 });
 
+
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+  console.log('Everest Theme API listening on port 3000!');
 });
