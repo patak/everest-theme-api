@@ -56,32 +56,45 @@ var storage = multer.diskStorage({
 
 var app = express();
 
+/**
+ * Allow Cross-Origin
+ */
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
 });
 
+/**
+ * Enable access to images folder
+ */
 app.use('/images', express.static('uploads'));
 
+/**
+ * Download app-theme file
+ */
 app.post('/download', bodyParser.urlencoded(true), function (req, res) {
-  var file = path.join(__dirname, '/theme/app-theme.example.html');
-  var rstream = fs.createReadStream(file);
+    var file = path.join(__dirname, '/theme/app-theme.example.html');
+    var rstream = fs.createReadStream(file);
 
-  var obj = req.body;
-  res.writeHead(200, { "Content-Type": "application/force-download", "Content-Disposition": "filename='app-theme.html'" });
+    var obj = req.body;
+    res.writeHead(200, { "Content-Type": "application/force-download", "Content-Disposition": "filename='app-theme.html'" });
 
-  for (var property in obj) {
-    if (obj.hasOwnProperty(property)) {
-      var re = new RegExp(property, "g");
-      rstream = rstream.pipe(replace(re, obj[property]));
+    for (var property in obj) {
+        if (obj.hasOwnProperty(property)) {
+            var re = new RegExp(property, "g");
+            rstream = rstream.pipe(replace(re, obj[property]));
+        }
     }
-  }
-  rstream.pipe(replace(/(#.*#)+/gmi, "inherit"))
-    .pipe(res);
+    rstream.pipe(replace(/(#.*#)+/gmi, "inherit"))
+        .pipe(res);
 
 });
 
+/**
+ * Upload image
+ * return base64 to minify image & image name
+ */
 app.post('/upload', function (req, res) {
     var upload = multer({
         storage: storage
@@ -118,5 +131,5 @@ app.post('/upload', function (req, res) {
 
 
 app.listen(3000, function () {
-  console.log('Everest Theme API listening on port 3000!');
+    console.log('Everest Theme API listening on port 3000!');
 });
