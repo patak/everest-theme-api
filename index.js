@@ -7,10 +7,52 @@ const base64Img = require('base64-img');
 const Jimp = require('jimp');
 const randomstring = require("randomstring");
 const Promise = require('bluebird');
-const formidable = Promise.promisifyAll(require('formidable'));
+const multer = require('multer')
 
+/**
+ * upload configuration
+ */
+var fileBaseName = null;
+var minifyBaseName = null;
+var newFileName = null;
+var filePath = null;
+var minifyPath = null;
 
+/**
+ * files configuration.
+ * To determine if a file is an valid we can read the first bytes of the stream and compare it with magic numbers
+ */
+var MAGIC_NUMBERS = {
+    jpg: 'ffd8ffe0',
+    jpg1: 'ffd8ffe1',
+    png: '89504e47',
+    gif: '47494638'
+}
 
+function checkMagicNumbers(magic) {
+    if (magic == MAGIC_NUMBERS.jpg || magic == MAGIC_NUMBERS.jpg1 || magic == MAGIC_NUMBERS.png || magic == MAGIC_NUMBERS.gif)
+        return true;
+}
+
+/**
+ * multer storage configuration
+ */
+var storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, path.join(__dirname, '/uploads'));
+    },
+    filename: function (req, file, callback) {
+        fileBaseName = path.basename(file.originalname, path.extname(file.originalname));
+        fileBaseName = randomstring.generate(7);
+
+        newFileName = fileBaseName + path.extname(file.originalname);
+
+        filePath = path.join(__dirname, '/uploads', newFileName);
+        minifyPath = path.join(__dirname, '/uploads', "m_" + newFileName);
+
+        callback(null, newFileName);
+    }
+});
 
 var app = express();
 
