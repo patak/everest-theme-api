@@ -110,7 +110,7 @@ app.post('/upload', function (req, res) {
 
         var minifyOriginalImage = new Promise(function (resolve, reject) {
             Jimp.read(filePath).then(function (image) {
-                image.quality(10)
+                image.scale(0.1)
                     .write(minifyPath, resolve);
             }).catch(function (err) {
                 console.error(err);
